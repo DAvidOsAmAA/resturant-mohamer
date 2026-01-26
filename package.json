@@ -10,7 +10,18 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DAvidOsAmAA/resturant-mohamer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DAvidOsAmAA/resturant-mohamer/issues"
+  },
+  "homepage": "https://github.com/DAvidOsAmAA/resturant-mohamer#readme"
 }
