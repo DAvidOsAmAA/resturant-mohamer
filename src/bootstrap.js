@@ -1,14 +1,16 @@
-const { dbConnection } = require("../DB/models/db.connection");
-const app = require('express').Router();
-require('dotenv').config({path :'./.env'})
+const { dbConnection } = require('../DB/models/db.connection');
+const express = require('express');
+const userRoutes = require('../src/modules/user module/user.routes');
 
-const port = process.env.PORT || 3000;
+module.exports = (app) => {
+  app.use(express.json());
+  app.use(express.urlencoded({ extended: true }));
 
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-dbConnection();
-app.get('/', (req, res) => res.send('Hello World!'));
-
-module.exports = app;
+  // database connection
+  dbConnection();
+    app.use('api/auth/',userRoutes)
+  // test route
+  app.get('/', (req, res) => {
+    res.send('Hello World!');
+  });
+};

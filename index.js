@@ -1,7 +1,12 @@
-const app = require('./src/bootstrap');
+const express = require('express');
+const bootstrap = require('./src/bootstrap');
+
+const app = express(); // ✅ هنا express app حقيقي
+
+// يضبط middlewares وroutes
+bootstrap(app);
 
 const port = process.env.PORT || 3000;
-
-
-app.get('/', (req, res) => res.send('Hello World!'))
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
