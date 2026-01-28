@@ -1,28 +1,57 @@
-const jwt = require('jsonwebtoken');
-const User = require('../user module/user.schema');
+import jwt from 'jsonwebtoken';
+import User from '../../../DB/models/user.model.js';
 
-const authMiddleware = async (req, res, next) => {
+const auth = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer '))
+    return res.status(401).json({ message: 'No access token' });
+
+  const accessToken = authHeader.split(' ')[1];
+
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ message: 'No token provided' });
+    // ✅ access token صالح
+    const decoded = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+    req.user = await User.findById(decoded.id);
+    return next();
+  } catch (err) {
+    // ❌ access token منتهي
+    if (err.name !== 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Invalid token' });
     }
 
-    const token = authHeader.split(' ')[1];
+    // 🔁 نحاول نعمل refresh
+    const refreshToken = req.headers['x-refresh-token'];
+    if (!refreshToken)
+      return res.status(401).json({ message: 'No refresh token' });
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    try {
+      const decodedRefresh = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET
+      );
 
-    const user = await User.findById(decoded.id);
-    if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      const user = await User.findOne({
+        _id: decodedRefresh.id,
+        'refreshTokens.token': refreshToken
+      });
+
+      if (!user)
+        return res.status(401).json({ message: 'Refresh token not valid' });
+
+      // 🔥 نطلع access token جديد
+      const newAccessToken = jwt.sign(
+        { id: user._id, role: user.role },
+        process.env.JWT_ACCESS_SECRET,
+        { expiresIn: '15m' }
+      );
+
+      res.setHeader('x-access-token', newAccessToken);
+      req.user = user;
+      next();
+    } catch (e) {
+      return res.status(401).json({ message: 'Refresh token expired' });
     }
-
-    req.user = user; // 👈 نخزن المستخدم في req
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 
-module.exports = authMiddleware;
+export default auth;

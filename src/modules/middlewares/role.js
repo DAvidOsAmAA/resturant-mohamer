@@ -14,4 +14,4 @@ const roleGuard = (...allowedRoles) => {
   };
 };
 
-module.exports = roleGuard;
+export default roleGuard;

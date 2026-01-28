@@ -1,12 +1,32 @@
-const express = require('express');
-const bootstrap = require('./src/bootstrap');
+import dotenv from 'dotenv';
+import express from 'express';
+import userRoutes from './src/modules/user module/user.routes.js';
+import dbConnection from './DB/models/db.connection.js';
 
-const app = express(); // ✅ هنا express app حقيقي
+dotenv.config(); // make sure env is loaded
 
-// يضبط middlewares وroutes
-bootstrap(app);
+const app = express();
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// routes
+app.use('/api/auth', userRoutes);
+
+// test route
+app.get('/', (req, res) => res.send('Hello World!'));
+
+const startServer = async () => {
+  try {
+    await dbConnection(); // wait for DB to connect first
+    console.log("MongoDB connected successfully");
+
+    const port = process.env.PORT || 4000;
+    app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
+  } catch (error) {
+    console.error("Failed to start server:", error);
+  }
+};
+
+startServer();

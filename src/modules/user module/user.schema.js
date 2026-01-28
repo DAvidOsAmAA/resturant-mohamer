@@ -1,41 +1,25 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import Joi from 'joi';
 
-const userSchema = new mongoose.Schema(
-  {
-    name: { type: String, required: false }, // ✅ اضافه
+// register validation
+export const registerSchema = Joi.object({
+  name: Joi.string().min(3).max(30).optional(),
 
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-      lowercase: true,
-      trim: true
-    },
-    password: {
-      type: String,
-      required: true
-    },
-    role: {
-      type: String,
-      enum: ['ADMIN','CUSTOMER'],
-      default: 'CUSTOMER'
-    },
-    refreshTokens: [{ token: String }] 
-  },
-  { timestamps: true }
-);
+  email: Joi.string()
+    .email()
+    .required(),
 
-// hash password
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  // next();
+  password: Joi.string()
+    .min(6)
+    .max(30)
+    .required(),
 });
 
-// compare password
-userSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
+// login validation
+export const loginSchema = Joi.object({
+  email: Joi.string()
+    .email()
+    .required(),
 
-module.exports = mongoose.model('user', userSchema);
+  password: Joi.string()
+    .required(),
+});

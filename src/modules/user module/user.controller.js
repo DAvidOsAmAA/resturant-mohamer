@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const User = require('./user.schema');
-
+import jwt from 'jsonwebtoken';
+// const User = require('./user.schema');
+import User from '../../../DB/models/user.model.js';
 /* ========== TOKENS ========== */
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
@@ -19,7 +19,7 @@ const generateTokens = (user) => {
 };
 
 /* ========== AUTH ========== */
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
@@ -40,14 +40,17 @@ exports.register = async (req, res) => {
       email: user.email,
       role: user.role
     });
-  } catch {
+  } catch(error) {
+     console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body);
+    
 
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
@@ -57,6 +60,8 @@ exports.login = async (req, res) => {
     const { accessToken, refreshToken } = generateTokens(user);
 
     user.refreshTokens.push({ token: refreshToken });
+    user.accessTokens.push({ token: accessToken });
+
     await user.save();
 
     res.json({
@@ -68,41 +73,16 @@ exports.login = async (req, res) => {
       accessToken,
       refreshToken
     });
-  } catch {
+  } catch (error) {
+    console.error(error); 
     res.status(500).json({ message: 'Server error' });
   }
 };
 
-exports.refreshToken = async (req, res) => {
-  try {
-    const { token } = req.body;
 
-    const payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
-    const user = await User.findById(payload.id);
-
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid token' });
-    }
-
-    const exists = user.refreshTokens.find(t => t.token === token);
-    if (!exists) {
-      return res.status(401).json({ message: 'Token revoked' });
-    }
-
-    const { accessToken, refreshToken } = generateTokens(user);
-
-    user.refreshTokens = user.refreshTokens.filter(t => t.token !== token);
-    user.refreshTokens.push({ token: refreshToken });
-    await user.save();
-
-    res.json({ accessToken, refreshToken });
-  } catch {
-    res.status(401).json({ message: 'Invalid refresh token' });
-  }
-};
 
 /* ========== ADMIN ========== */
-exports.getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   const users = await User.find()
     .select('-password -refreshTokens');
 
