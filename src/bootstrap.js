@@ -1,15 +1,30 @@
-const { dbConnection } = require("../DB/models/db.connection");
-const app = require('express').Router();
-require('dotenv').config({path :'./.env'})
-
-const port = process.env.PORT || 3000;
+import  dbConnection  from "../DB/models/db.connection.js";
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const bootstrap =async (app, express) => {
+    app.use(express.json());
+    const limiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, 
+        message: 'Too many requests from this IP, please try again later.'
+      });
+    app.use(limiter);
+    
+    app.use(helmet());
+
+    app.use((err,req,res,next)=>{
+        err.statusCode=err.statusCode || 501;
+        res.status(err.statusCode).json({
+            status: err.statusCode ,
+            message: err.message,
+            stack: err.stack
+        })
+    });
 
 
-dbConnection();
-app.get('/', (req, res) => res.send('Hello World!'));
+    await dbConnection();
+}
 
-module.exports = app;
+export default bootstrap;
