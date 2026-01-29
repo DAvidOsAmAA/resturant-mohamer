@@ -1,13 +1,19 @@
-const express=require('express')
-const router =express.Router()
-const mealcontroller=require('./meals.controller')
-const { validatecreatmealscheema,
+import express from 'express';
+import * as mealcontroller from './meals.controller.js';  
+
+import { 
+    validatecreatmealscheema,
     validateGetMealsQuery, 
     validatemealidparamsscheema,
-    validateupdateMealBodySchema}= require('./meal.validate')
-router.get('/:id',validatemealidparamsscheema,mealcontroller.getmealbyid)
-router.get('/',validateGetMealsQuery, mealcontroller.getallmeals)           
-    router.put('/:id', validatemealidparamsscheema,validateupdateMealBodySchema,mealcontroller.updateMeal)
-router.post('/', validatecreatmealscheema,mealcontroller.creatmeal)          
-router.delete('/:id',validatemealidparamsscheema, mealcontroller.deleteMeal)
-module.exports=router
+    validateupdateMealBodySchema 
+} from './meal.validate.js';
+
+const router = express.Router();
+
+router.get('/:id', validatemealidparamsscheema, mealcontroller.getmealbyid);
+router.get('/', validateGetMealsQuery, mealcontroller.getallmeals);           
+router.put('/:id', validatemealidparamsscheema, validateupdateMealBodySchema, mealcontroller.updateMeal);
+router.post('/', validatecreatmealscheema, mealcontroller.creatmeal);          
+router.delete('/:id', validatemealidparamsscheema, mealcontroller.deleteMeal);
+
+export default router;
