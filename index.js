@@ -1,16 +1,16 @@
 import dotenv from 'dotenv';
 import express from 'express';
-<<<<<<< HEAD
-const app = express();
-import bootstrap from './src/bootstrap.js';
-dotenv.config({ path: './.env' });
-const port = process.env.PORT || 3000;
-bootstrap(app, express);
+// <<<<<<< HEAD
+// const app = express();
+// import bootstrap from './src/bootstrap.js';
+// dotenv.config({ path: './.env' });
+// const port = process.env.PORT || 3000;
+// bootstrap(app, express);
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
-=======
+// app.listen(port, () => {
+//     console.log(`Server is running on port ${port}`);
+// });
+// =======
 import userRoutes from './src/modules/user module/user.routes.js';
 import dbConnection from './DB/models/db.connection.js';
 
@@ -41,4 +41,4 @@ const startServer = async () => {
 };
 
 startServer();
->>>>>>> ahmed
+// >>>>>>> ahmed
