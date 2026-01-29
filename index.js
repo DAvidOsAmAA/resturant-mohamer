@@ -13,6 +13,7 @@ import express from 'express';
 // =======
 import userRoutes from './src/modules/user module/user.routes.js';
 import dbConnection from './DB/models/db.connection.js';
+import categoryRoutes from './src/modules/category module/category.routes.js';
 
 dotenv.config(); // make sure env is loaded
 
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // routes
 app.use('/api/auth', userRoutes);
+app.use('/api/categories', categoryRoutes);
 
 // test route
 app.get('/', (req, res) => res.send('Hello World!'));

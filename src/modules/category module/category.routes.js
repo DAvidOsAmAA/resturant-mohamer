@@ -1,22 +1,22 @@
 import express from 'express';
-import upload from '../../middlewares/upload.middleware.js';
-import { validateBody } from '../../middlewares/validate.middleware.js';
-import { asyncHandler } from '../../middlewares/asyncHandler.middleware.js';
+import { uploadSingleImage } from '../../utilis/multer.js';
+import validate from '../middlewares/validate.js';
+import {asynchandler} from '../../utilis/asynchandler.js'
 import { createCategory,
         deleteCategory,
         getCategories,
         updateCategory } from './category.controller.js';
-import { createCategorySchema, updateCategorySchema } from './category.validation.js';
+import { createCategorySchema, updateCategorySchema } from './category.validateSchema.js'
 const categoryRoutes=express.Router();
 categoryRoutes.post('/create',
-    upload.single('image'),
-    validateBody(createCategorySchema),
-    asyncHandler(createCategory)
+    uploadSingleImage('image'),
+    validate(createCategorySchema),
+    asynchandler(createCategory)
     );
-    categoryRoutes.get('/',asyncHandler(getCategories));
-categoryRoutes.delete('/delete/:id',asyncHandler(deleteCategory));
+    categoryRoutes.get('/',asynchandler(getCategories));
+categoryRoutes.delete('/delete/:id',asynchandler(deleteCategory));
 categoryRoutes.patch('/update/:id',
-    upload.single('image'),
-    validateBody(updateCategorySchema),
-    asyncHandler(updateCategory));
+    uploadSingleImage('image'),
+    validate(updateCategorySchema),
+    asynchandler(updateCategory));
 export default categoryRoutes;
