@@ -1,6 +1,9 @@
 import  dbConnection  from "../DB/models/db.connection.js";
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import userRoutes from './modules/user module/user.routes.js';
+import categoryRoutes from './modules/category module/category.routes.js';
+
 
 
 const bootstrap =async (app, express) => {
@@ -11,9 +14,13 @@ const bootstrap =async (app, express) => {
         message: 'Too many requests from this IP, please try again later.'
       });
     app.use(limiter);
-    
     app.use(helmet());
+    
+    // routes
+    app.use('/api/auth', userRoutes);
+    app.use('/api/categories', categoryRoutes);
 
+    // global error handler
     app.use((err,req,res,next)=>{
         err.statusCode=err.statusCode || 501;
         res.status(err.statusCode).json({
