@@ -1,5 +1,5 @@
 import Category from "../../../DB/models/category.model.js";
-// import cloudinary from "../../config/cloudinary.config.js";
+import cloudinary from "../../utilis/cloudnairy.js";
 
 export const getCategories = async (req, res) => {
         const categories = await Category.find()
