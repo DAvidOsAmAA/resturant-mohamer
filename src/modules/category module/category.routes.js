@@ -13,8 +13,8 @@ categoryRoutes.post('/create',
     validate(createCategorySchema),
     asynchandler(createCategory)
     );
-    categoryRoutes.get('/',asyncHandler(getCategories));
-categoryRoutes.delete('/delete/:id',asyncHandler(deleteCategory));
+    categoryRoutes.get('/',asynchandler(getCategories));
+categoryRoutes.delete('/delete/:id',asynchandler(deleteCategory));
 categoryRoutes.patch('/update/:id',
     uploadSingleImage('image'),
     validate(updateCategorySchema),
