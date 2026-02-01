@@ -35,5 +35,14 @@ export const chatSchema = Joi.object({
     .required()
     .messages({
       'any.required': 'Conversation is required'
-    })
+    }),
+
+    userMessage: Joi.string()
+      .trim()
+      .min(1)
+      .required()
+      .messages({
+        'any.required': 'Message is required',
+        'string.empty': 'Message is required'
+      })
 })

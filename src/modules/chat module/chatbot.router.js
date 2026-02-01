@@ -1,18 +1,18 @@
 // If this folder will be in 'Routes' folder and the fns in the 'Controllers' folder ❌❌
 // Feature-based folder Structure: a module folder containing the chatbot's con. routes and joi validation (chatbot.schema.js)
-import chatCon from './chatbot.contoller.js'
+import chatCon from './chatbot.controller.js'
 import auth  from '../middlewares/auth.js' //👈 The Protect MW
 import express from 'express'
 const router = express.Router()
 
-router.route('/chat/:userId').post(auth,chatCon.chatbot)
+router.route('/chat').post(auth,chatCon.chatbot)
 
 router.route('/createChat').post(auth,chatCon.createChat)
 
-router.route('/readChat').get(auth,chatCon.readChat)
+router.route('/readChat/:userId').get(auth,chatCon.readChat)
 
-router.route('/updateChat').patch(auth,chatCon.updateChat)
+router.route('/updateChat/:userId').patch(auth,chatCon.updateChat)
 
-router.route('/deleteChat').delete(auth,chatCon.deleteChat)
+router.route('/deleteChat/:userId').delete(auth,chatCon.deleteChat)
 
 module.exports = router

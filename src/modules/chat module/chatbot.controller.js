@@ -1,15 +1,16 @@
-import { chatWithBot } from '../../../../chatbotSetup'
-import {Chat} from 'mongoose'
-import { GoogleGenerativeAI} from "@google/generative-ai"
+import {Chat} from '../../../DB/models/chat.model'
+import {GoogleGenerativeAI} from "@google/generative-ai"
+import {asyncHandler} from '../../utilis/asyncHandler'
+import { chatSchema } from './chatbot.schema'
 
-const asyncHandler = (fn) =>{
-    return (req,res,next) =>{
-        fn(req,res,next).catch(e => {
-            console.log(`\nError from asyncErHandler:,${JSON.stringify(e)}\n`)
-            next(e)
-        })
-    }
-}
+// const asyncHandler = (fn) =>{
+//     return (req,res,next) =>{
+//         fn(req,res,next).catch(e => {
+//             console.log(`\nError from asyncErHandler:,${JSON.stringify(e)}\n`)
+//             next(e)
+//         })
+//     }
+// }
 
 
 const createChat = asyncHandler(async (req,res,next) =>{
@@ -28,7 +29,7 @@ const createChat = asyncHandler(async (req,res,next) =>{
 
 const readChat = asyncHandler(async(req,res,next) =>{
     const {userId} = req.params;
-    const userChat = await Chat.findById(userId);
+    const userChat = await Chat.findOne({userId});
     res.status(200).json({
         status:'success',
         data:{
@@ -38,11 +39,11 @@ const readChat = asyncHandler(async(req,res,next) =>{
 })
 
 const updateChat = asyncHandler(async(req,res,next) =>{
-    const {chatId} = req.params;
+    const {userId} = req.params;
     const {history} = req.body;
 
 
-    const updatedChat = await Chat.findById(chatId)
+    const updatedChat = await Chat.findOne({userId})
 
     const completeHistory = [...updatedChat.history,...history];
 
@@ -58,8 +59,8 @@ const updateChat = asyncHandler(async(req,res,next) =>{
 })
 
 const deleteChat = asyncHandler(async(req,res,next) =>{
-    const {chatId} = req.params;
-    const deletedChat = await Chat.findByIdAndDelete(chatId)
+    const {userId} = req.params;
+    const deletedChat = await Chat.find({userId})
     res.status(200).json({
         status:'success',
         data:{
@@ -68,7 +69,7 @@ const deleteChat = asyncHandler(async(req,res,next) =>{
     })
 })
 
-// Normal MVC CURD
+// Normal MVC CRUD
 
 
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY)
@@ -126,7 +127,6 @@ const chatbot = asyncHandler(async (req, res, next) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
     const menuItems  = await Meals.findAll() 
-
     // const menuItems = [
     //     { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
     //     { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
@@ -134,12 +134,31 @@ const chatbot = asyncHandler(async (req, res, next) => {
     //     { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
     // ]
     // 👇Retreives all the chat so it can be used 
-    const userChat = await Chat.findById(req.user._id)
+    
+    let userChat = await Chat.findById(req.user._id)
 
-    // let userChat = await Chat.findOne({userId:'6978eca47a8d74ee664080cd'})
     if(!userChat){
-        userChat = await Chat.create({userId:req.user._id})
+        userChat = await Chat.create({userId:value.userId})
     }
+
+    const { error, value } = chatSchema.validate(
+    {
+        userId: req.user._id,
+        history: userChat.history || [],
+        userMessage
+    },
+    { abortEarly: false }
+    )
+
+    if (error) {
+        return res.status(400).json({
+        status: 'fail',
+        errors: error.details.map(err => err.message)
+        })
+    }
+
+
+
     // 👇Speak with the model, given our menu & chat history
     const response = await chatWithBot(userMessage, menuItems, userChat.history)
 
@@ -158,4 +177,10 @@ const chatbot = asyncHandler(async (req, res, next) => {
 
 // Router: router.post('/chatbot',)
 
-module.exports = { chatbot,createChat, readChat, updateChat, deleteChat };
+export default { 
+    chatbot,
+    createChat,
+    readChat,
+    updateChat,
+    deleteChat 
+};

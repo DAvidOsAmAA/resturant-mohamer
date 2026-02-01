@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "express": "^5.2.1",
     "joi": "^18.0.2",
     "mongoose": "^9.1.5"
