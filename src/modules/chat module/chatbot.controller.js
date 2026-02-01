@@ -1,9 +1,9 @@
-import {Chat} from '../../../DB/models/chat.model'
+import Chat from '../../../DB/models/chat.model.js'
 import {GoogleGenerativeAI} from "@google/generative-ai"
-import {asyncHandler} from '../../utilis/asyncHandler'
-import { chatSchema } from './chatbot.schema'
+import {asynchandler} from '../../utilis/asyncHandler.js'
+import { chatSchema } from './chatbot.schema.js'
 
-// const asyncHandler = (fn) =>{
+// const asynchandler = (fn) =>{
 //     return (req,res,next) =>{
 //         fn(req,res,next).catch(e => {
 //             console.log(`\nError from asyncErHandler:,${JSON.stringify(e)}\n`)
@@ -13,7 +13,7 @@ import { chatSchema } from './chatbot.schema'
 // }
 
 
-const createChat = asyncHandler(async (req,res,next) =>{
+const createChat = asynchandler(async (req,res,next) =>{
     const {userId} = req.body;
     const newChat = await Chat.create({
         userId,
@@ -27,7 +27,7 @@ const createChat = asyncHandler(async (req,res,next) =>{
     })
 })
 
-const readChat = asyncHandler(async(req,res,next) =>{
+const readChat = asynchandler(async(req,res,next) =>{
     const {userId} = req.params;
     const userChat = await Chat.findOne({userId});
     res.status(200).json({
@@ -38,7 +38,7 @@ const readChat = asyncHandler(async(req,res,next) =>{
     })
 })
 
-const updateChat = asyncHandler(async(req,res,next) =>{
+const updateChat = asynchandler(async(req,res,next) =>{
     const {userId} = req.params;
     const {history} = req.body;
 
@@ -58,7 +58,7 @@ const updateChat = asyncHandler(async(req,res,next) =>{
     })
 })
 
-const deleteChat = asyncHandler(async(req,res,next) =>{
+const deleteChat = asynchandler(async(req,res,next) =>{
     const {userId} = req.params;
     const deletedChat = await Chat.find({userId})
     res.status(200).json({
@@ -123,7 +123,7 @@ const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
 }
 
 // Function to handle chatbot requests
-const chatbot = asyncHandler(async (req, res, next) => {
+const chatbot = asynchandler(async (req, res, next) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
     const menuItems  = await Meals.findAll() 

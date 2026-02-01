@@ -1,6 +1,7 @@
 node_modules/
 .env
-server.js
+index.js
+bootstrap.js
 server.js
 package.local.json
 package-lock.local.json

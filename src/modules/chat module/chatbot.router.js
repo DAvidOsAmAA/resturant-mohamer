@@ -5,7 +5,7 @@ import auth  from '../middlewares/auth.js' //👈 The Protect MW
 import express from 'express'
 const router = express.Router()
 
-router.route('/chat').post(auth,chatCon.chatbot)
+router.route('/chatbot').post(auth,chatCon.chatbot)
 
 router.route('/createChat').post(auth,chatCon.createChat)
 
@@ -15,4 +15,4 @@ router.route('/updateChat/:userId').patch(auth,chatCon.updateChat)
 
 router.route('/deleteChat/:userId').delete(auth,chatCon.deleteChat)
 
-module.exports = router
+export default router
