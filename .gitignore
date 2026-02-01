@@ -1,3 +1,6 @@
 node_modules/
 .env
 server.js
+server.js
+package.local.json
+package-lock.local.json
