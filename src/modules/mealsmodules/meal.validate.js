@@ -36,13 +36,12 @@ const getMealsQuerySchema = Joi.object({
 });
 
 const mealidparamsscheema = Joi.object({
-    id: Joi.string()
-        .regex(/^[0-9a-fA-F]{24}$/)
-        .required()
+    id: Joi.string().length(24).pattern(/^[0-9a-fA-F]{24}$/i).required()
         .messages({
             'string.base': 'Meal ID must be text',
             'string.empty': 'Meal ID cannot be empty',
-            'string.pattern.base': 'Invalid meal ID format. Must be a 24-character hexadecimal string',
+            'string.length': 'Meal ID must be exactly 24 characters',
+            'string.pattern.base': 'Invalid meal ID format. Must be 24 hex characters',
             'any.required': 'Meal ID is required'
         })
 });

@@ -14,6 +14,6 @@ router.get('/:id', validatemealidparamsscheema, mealcontroller.getmealbyid);
 router.get('/', validateGetMealsQuery, mealcontroller.getallmeals);           
 router.put('/:id', validatemealidparamsscheema, validateupdateMealBodySchema, mealcontroller.updateMeal);
 router.post('/', validatecreatmealscheema, mealcontroller.creatmeal);          
-router.delete('/:id', validatemealidparamsscheema, mealcontroller.deleteMeal);
+router.delete('/:id', mealcontroller.deleteMeal);
 
 export default router;

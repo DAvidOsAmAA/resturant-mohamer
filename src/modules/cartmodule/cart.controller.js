@@ -1,7 +1,7 @@
 import meals from '../../../DB/models/meals.model.js';
-import mongoose from 'mongoose';
-// GET /meals/:id
-export const getmealbyid = async (req, res, next) => {
+
+// GET /cart/:id
+export const cartbyid = async (req, res, next) => {
     try {
         const Meal = await meals.findById(req.params.id);
         if (!Meal) return res.status(404).json({ success: false, message: 'meal not found' });
@@ -11,22 +11,13 @@ export const getmealbyid = async (req, res, next) => {
     }
 };
 
-// GET /meals
-export const getallmeals = async (req, res, next) => {
+// GET /cart
+export const getallcart = async (req, res, next) => {
     try {
-        const { category, minPrice, maxPrice, page = 1, limit = 10, sort = '-createdAt' } = req.query;
-      
         
-        if (category) filter.category = category;
-        if (minPrice || maxPrice) filter.price = {};
-        if (minPrice) filter.price.$gte = minPrice;
-        if (maxPrice) filter.price.$lte = maxPrice;
 
         const MEALS = await meals.find(filter)
-            .select('-__v')
-            .limit(limit)
-            .sort(sort)
-            .skip((page - 1) * limit);
+        
             
         const count = await meals.countDocuments(filter);
         
