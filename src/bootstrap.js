@@ -1,38 +1,34 @@
-import  dbConnection  from "../DB/models/db.connection.js";
-import rateLimit from 'express-rate-limit';
-import helmet from 'helmet';
-import userRoutes from './modules/user module/user.routes.js';
-import categoryRoutes from './modules/category module/category.routes.js';
-import chatRoutes from './modules/chat module/chatbot.router.js'
+import express from 'express';
+import dotenv from 'dotenv';
+import { dbConnection } from '../DB/models/db.connection.js';
+import mealRoutes from './modules/mealsmodules/meal.route.js';
 
+dotenv.config({ path: './.env' });
 
-const bootstrap =async (app, express) => {
-    app.use(express.json());
-    const limiter = rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 100, 
-        message: 'Too many requests from this IP, please try again later.'
-      });
-    app.use(limiter);
-    app.use(helmet());
-    
-    // routes
-    app.use('/api/auth', userRoutes);
-    app.use('/api/categories', categoryRoutes);
-    app.use('/api/chat',chatRoutes )
+const app = express();
+const port = process.env.PORT || 3000;
 
-    // global error handler
-    app.use((err,req,res,next)=>{
-        err.statusCode=err.statusCode || 501;
-        res.status(err.statusCode).json({
-            status: err.statusCode ,
-            message: err.message,
-            stack: err.stack
-        })
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+dbConnection();
+
+app.get('/', (req, res) => res.send('Hello World!'));
+app.use('/meals', mealRoutes);
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.statusCode || 500).json({
+        success: false,
+        error: err.message || 'Internal Server Error'
     });
+});
 
+app.use((req, res) => {  
+    res.status(404).json({
+        success: false,
+        error: 'Route not found'
+    });
+});
 
-    await dbConnection();
-}
-
-export default bootstrap;
+export default app;
