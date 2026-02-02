@@ -1,0 +1,19 @@
+import express from "express";
+import { createSubMeal, deleteSubMeal, getSubMeals, updateSubMeal } from "./subMeals.controller.js";
+import validate from "../middlewares/validate.js";
+import { createSubMealSchema, updateSubMealSchema } from "./subMeals.validateSchema.js";
+import { asynchandler } from "../../utilis/asyncHandler.js";
+
+let router = express.Router();
+
+router.post('/create',validate(createSubMealSchema),asynchandler(createSubMeal));
+router.get('/get',asynchandler(getSubMeals));
+router.delete('/delete/:id',asynchandler(deleteSubMeal));
+router.patch('/update/:id',validate(updateSubMealSchema),asynchandler(updateSubMeal));
+
+export default router;
+
+
+
+
+

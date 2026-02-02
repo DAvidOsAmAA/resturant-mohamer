@@ -10,7 +10,6 @@ const validate = (schema) => {
         errors: error.details.map(err => err.message)
       });
     }
-
     next();
   };
 };
