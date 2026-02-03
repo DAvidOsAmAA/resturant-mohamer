@@ -4,6 +4,7 @@ const subMealSchema = new Schema({
     name: {
         type: String,
         required: true,
+        unique: true,
     },
     price: {
         type: Number,
@@ -12,6 +13,9 @@ const subMealSchema = new Schema({
     quantity: {
         type: Number,
         default: 1,
+    },
+    image: {
+        type: String
     }
 }, { timestamps: true });
 
