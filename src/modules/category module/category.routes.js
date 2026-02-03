@@ -5,6 +5,7 @@ import {asynchandler} from '../../utilis/asyncHandler.js'
 import { createCategory,
         deleteCategory,
         getCategories,
+        getSpecificCategory,
         updateCategory } from './category.controller.js';
 import { createCategorySchema, updateCategorySchema } from './category.validateSchema.js'
 const categoryRoutes=express.Router();
@@ -15,6 +16,7 @@ categoryRoutes.post('/create',
     asynchandler(createCategory)
     );
     categoryRoutes.get('/',asynchandler(getCategories));
+    categoryRoutes.get('/:id',asynchandler(getSpecificCategory))
 categoryRoutes.delete('/delete/:id',asynchandler(deleteCategory));
 categoryRoutes.patch('/update/:id',
     uploadSingleImage('image'),

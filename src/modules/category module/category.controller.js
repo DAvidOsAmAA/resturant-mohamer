@@ -1,9 +1,16 @@
 import Category from "../../../DB/models/category.model.js";
 import cloudinary from "../../utilis/cloudnairy.js";
-
+/**
+ * @desc Get All Categries 
+ * @route Get /api/categories/
+ * @access Public
+ */
 export const getCategories = async (req, res) => {
-        const categories = await Category.find()
-        if (categories.length === 0) {
+        const page=req.query.page||1;
+        const limit=req.query.limit||5;
+        const skip=(page-1)*limit;
+        const categories = await Category.find().skip(skip).limit(limit)
+                if (categories.length === 0) {
             return res.status(404).json({ message: "No categories found " });
         }
     res
@@ -11,6 +18,30 @@ export const getCategories = async (req, res) => {
         .json({ message: "Categories retrieved successfully", categories });
     
 };
+/**
+ * @desc Get Specific Category 
+ * @route Get /api/categories/:id
+ * @access Public
+ */
+export const getSpecificCategory=async(req,res)=>{
+  const {id}=req.body;
+  const category=await Category.findById(id)
+  if(!category){
+    res.status(404).json({
+      status:"fail",
+      message:`Category with Id :${id } Not found`
+    })
+  }
+  res.status(200).json({
+    status:"success",
+    data:category
+    })
+}
+/**
+ * @desc Create 
+ * @route Post /api/categories/
+ * @access Private
+ */
 export const createCategory = async (req, res) => {
     const { name, Brand } = req.body;
     if (!req.file) return res.status(400).json({ message: "Image is required" });
@@ -34,7 +65,11 @@ export const createCategory = async (req, res) => {
     await category.save();
     res.status(201).json(category);
 };
-
+/**
+ * @desc Delete Specifice Categroy 
+ * @route Del /api/categories/
+ * @access Private
+ */
 export const deleteCategory =async (req,res )=>{
   
     const {id}=req.params
@@ -45,7 +80,11 @@ export const deleteCategory =async (req,res )=>{
     res.status(200).json({message:"Category deleted successfully",category})
   
 }
-
+/**
+ * @desc Update specifice Category
+ * @route Patch /api/categories/
+ * @access Private
+ */
 export const updateCategory =async (req,res)=>{
     const {id}=req.params
     const {name}=req.body
