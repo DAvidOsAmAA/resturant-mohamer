@@ -1,13 +1,13 @@
-import { required } from "joi";
-import mealsModel from "./meals.model";
+
 import mongoose from "mongoose";
 const cartscheema = new mongoose.Schema({
   user_id: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'User', 
-    required: true 
+    required: true ,
+    index: true 
 },
-mealid:{
+meal_id:{
 type:mongoose.Schema.Types.ObjectId,
 ref:'meals',
 required:true
@@ -34,4 +34,5 @@ required:true
   enum: ['small', 'medium', 'large'], 
   default: 'medium' 
 }},{ timestamps: true })
-export default mongoose.model('cart', cartscheema);
+cartscheema.index({ user_id: 1, meal_id: 1 });
+export default mongoose.model('Cart', cartscheema);

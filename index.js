@@ -1,11 +1,12 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import bootstrap from './src/bootstrap.js';
 dotenv.config({ path: './.env' , quiet:true}); // Added quiet:true to remove the message with the server starts
 const app = express();
-import bootstrap from './src/bootstrap.js';
+
 const port = process.env.PORT || 3000;
 
-bootstrap(app, express);
+await bootstrap(app, express); 
 
 
 app.listen(port, () => {

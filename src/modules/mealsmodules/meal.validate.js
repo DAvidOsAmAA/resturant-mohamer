@@ -21,7 +21,7 @@ const validate = (schema, property) => {
             });
         }
        
-        req[property] = value;
+        Object.assign(req.validatedQuery || (req.validatedQuery = {}), value);
         next();
     };
 };
