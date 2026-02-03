@@ -2,7 +2,7 @@ import Chat from '../../../DB/models/chat.model.js'
 import {GoogleGenerativeAI} from "@google/generative-ai"
 import {asynchandler} from '../../utilis/asyncHandler.js'
 import { chatSchema } from './chatbot.schema.js'
-
+import Meals from '../../../DB/models/meals.model.js'
 
 const createChat = asynchandler(async (req,res) =>{
     const {userId} = req.body;
@@ -115,13 +115,13 @@ const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
 const chatbot = asynchandler(async (req, res) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
-    // const menuItems  = await Meals.findAll() 
-    const menuItems = [
-        { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
-        { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
-        { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
-        { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
-    ]
+    const menuItems  = await Meals.findAll() 
+    // const menuItems = [
+    //     { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
+    //     { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
+    //     { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
+    //     { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
+    // ]
     // 👇Retreives all the chat so it can be used 
     
     let userChat = await Chat.findById(req.user._id)
