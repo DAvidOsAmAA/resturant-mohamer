@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import userRoutes from './modules/user module/user.routes.js';
 import categoryRoutes from './modules/category module/category.routes.js';
 import chatRoutes from './modules/chat module/chatbot.router.js'
+import subMealsRoutes from './modules/subMeals module/subMeals.routes.js'
 
 
 const bootstrap =async (app, express) => {
@@ -20,6 +21,7 @@ const bootstrap =async (app, express) => {
     app.use('/api/auth', userRoutes);
     app.use('/api/categories', categoryRoutes);
     app.use('/api/chat',chatRoutes )
+    app.use('/api/subMeals',subMealsRoutes );
 
     // global error handler
     app.use((err,req,res,next)=>{

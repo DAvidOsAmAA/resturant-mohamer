@@ -8,6 +8,7 @@ import { createCategory,
         updateCategory } from './category.controller.js';
 import { createCategorySchema, updateCategorySchema } from './category.validateSchema.js'
 const categoryRoutes=express.Router();
+
 categoryRoutes.post('/create',
     uploadSingleImage('image'),
     validate(createCategorySchema),
