@@ -1,17 +1,18 @@
 import jwt from 'jsonwebtoken';
 // const User = require('./user.schema');
 import User from '../../../DB/models/user.model.js';
+
 /* ========== TOKENS ========== */
 const generateTokens = (user) => {
   const accessToken = jwt.sign(
     { id: user._id, role: user.role },
-    process.env.JWT_SECRET,
+    process.env.JWT_ACCESS_SECRET,
     { expiresIn: '15m' }
   );
-
+  // The names of JWT Secrets here where different from the .env ones
   const refreshToken = jwt.sign(
     { id: user._id },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.JWT_REFRESH_SECRET,
     { expiresIn: '7d' }
   );
 
@@ -27,21 +28,20 @@ export const register = async (req, res) => {
     if (exists) {
       return res.status(400).json({ message: 'Email already exists' });
     }
-
     const user = await User.create({
       email,
       password,
       name,
       role: 'CUSTOMER'
     });
-
+    
     res.status(201).json({
       id: user._id,
       email: user.email,
       role: user.role
     });
   } catch(error) {
-     console.error(error);
+    console.error(error);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -49,9 +49,8 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     
-
     const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(400).json({ message: 'Invalid credentials' });

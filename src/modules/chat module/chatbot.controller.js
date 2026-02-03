@@ -97,6 +97,7 @@ const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
                 maxOutputTokens:800 // 👈 Controls the length of responses
             }
         })
+
         const context = `${systemPrompt}  \n\n Our Menu: ${JSON.stringify(menuItems)}`
         const historyMessage  = chatHistory.map((chat)=>{
             return {
@@ -126,24 +127,23 @@ const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
 const chatbot = asynchandler(async (req, res, next) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
-    const menuItems  = await Meals.findAll() 
-    // const menuItems = [
-    //     { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
-    //     { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
-    //     { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
-    //     { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
-    // ]
+    // const menuItems  = await Meals.findAll() 
+    const menuItems = [
+        { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
+        { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
+        { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
+        { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
+    ]
     // 👇Retreives all the chat so it can be used 
     
     let userChat = await Chat.findById(req.user._id)
 
     if(!userChat){
-        userChat = await Chat.create({userId:value.userId})
+        userChat = await Chat.create({userId:req.user._id})
     }
 
     const { error, value } = chatSchema.validate(
     {
-        userId: req.user._id,
         history: userChat.history || [],
         userMessage
     },

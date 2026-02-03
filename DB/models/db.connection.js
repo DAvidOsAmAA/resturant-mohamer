@@ -2,7 +2,8 @@
 
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({quiet:true});
+//Added quiet:true to remove the message when the server starts
 
 const dbConnection = async () => {
   try {
