@@ -37,4 +37,4 @@ const bootstrap =async (app, express) => {
     await dbConnection();
 }
 
-export default app;
+export default bootstrap;
