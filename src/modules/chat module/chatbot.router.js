@@ -3,15 +3,17 @@
 import chatCon from './chatbot.controller.js'
 import auth  from '../middlewares/auth.js' //👈 The Protect MW
 import express from 'express'
+import role from '../middlewares/role.js';
 const router = express.Router()
 
 router.route('/chatbot').post(auth,chatCon.chatbot)
 
-router.route('/createChat').post(auth,chatCon.createChat)
+router.route('/createChat').post(auth,role("ADMIN"),chatCon.createChat)
 
-router.route('/readChat/:userId').get(auth,chatCon.readChat)
+router.route('/readChat').get(auth,chatCon.readChat)
 
-router.route('/updateChat/:userId').patch(auth,chatCon.updateChat)
+
+router.route('/updateChat').patch(auth,role("ADMIN"),chatCon.updateChat);
 
 router.route('/deleteChat/:userId').delete(auth,chatCon.deleteChat)
 

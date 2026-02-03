@@ -4,4 +4,7 @@ index.js
 bootstrap.js
 server.js
 package.local.json
-package-lock.local.json
+package-lock.local.jsonnode_modules/
+package-lock.json
+node_modules/
+package-lock.json

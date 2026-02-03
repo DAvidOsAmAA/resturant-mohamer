@@ -2,18 +2,9 @@ import Chat from '../../../DB/models/chat.model.js'
 import {GoogleGenerativeAI} from "@google/generative-ai"
 import {asynchandler} from '../../utilis/asyncHandler.js'
 import { chatSchema } from './chatbot.schema.js'
+import meals from '../../../DB/models/meals.model.js'
 
-// const asynchandler = (fn) =>{
-//     return (req,res,next) =>{
-//         fn(req,res,next).catch(e => {
-//             console.log(`\nError from asyncErHandler:,${JSON.stringify(e)}\n`)
-//             next(e)
-//         })
-//     }
-// }
-
-
-const createChat = asynchandler(async (req,res,next) =>{
+const createChat = asynchandler(async (req,res) =>{
     const {userId} = req.body;
     const newChat = await Chat.create({
         userId,
@@ -27,9 +18,8 @@ const createChat = asynchandler(async (req,res,next) =>{
     })
 })
 
-const readChat = asynchandler(async(req,res,next) =>{
-    const {userId} = req.params;
-    const userChat = await Chat.findOne({userId});
+const readChat = asynchandler(async(req,res) =>{
+    const userChat = await Chat.findOne({userId:req.user._id});
     res.status(200).json({
         status:'success',
         data:{
@@ -38,12 +28,10 @@ const readChat = asynchandler(async(req,res,next) =>{
     })
 })
 
-const updateChat = asynchandler(async(req,res,next) =>{
-    const {userId} = req.params;
+const updateChat = asynchandler(async(req,res) =>{
     const {history} = req.body;
 
-
-    const updatedChat = await Chat.findOne({userId})
+    const updatedChat = await Chat.findOne({userId:req.user._id})
 
     const completeHistory = [...updatedChat.history,...history];
 
@@ -58,9 +46,9 @@ const updateChat = asynchandler(async(req,res,next) =>{
     })
 })
 
-const deleteChat = asynchandler(async(req,res,next) =>{
-    const {userId} = req.params;
-    const deletedChat = await Chat.find({userId})
+const deleteChat = asynchandler(async(req,res) =>{
+    
+    const deletedChat = await Chat.find({userId:req.user._id})
     res.status(200).json({
         status:'success',
         data:{
@@ -124,16 +112,16 @@ const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
 }
 
 // Function to handle chatbot requests
-const chatbot = asynchandler(async (req, res, next) => {
+const chatbot = asynchandler(async (req, res) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
-    // const menuItems  = await Meals.findAll() 
-    const menuItems = [
-        { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
-        { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
-        { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
-        { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
-    ]
+    const menuItems  = await meals.find() 
+    // const menuItems = [
+    //     { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
+    //     { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
+    //     { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
+    //     { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
+    // ]
     // 👇Retreives all the chat so it can be used 
     
     let userChat = await Chat.findById(req.user._id)
