@@ -11,14 +11,6 @@ const objectId = (value, helpers) => {
 }
 
 export const chatSchema = Joi.object({
-  userId: Joi.string()
-    .required()
-    .custom(objectId)
-    .messages({
-      'any.required': 'User ID is required',
-      'string.empty': 'User ID is required'
-    }),
-
   history: Joi.array()
     .items(
       Joi.object({

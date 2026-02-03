@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 import express from 'express';
+dotenv.config({ path: './.env' , quiet:true}); // Added quiet:true to remove the message with the server starts
 const app = express();
 import bootstrap from './src/bootstrap.js';
-dotenv.config({ path: './.env' });
 const port = process.env.PORT || 3000;
 
 bootstrap(app, express);
