@@ -1,13 +1,14 @@
-{
-  "name": "mhamr",
-  "version": "1.0.0",
-  "type": "module",
-  "main": "index.js",
-  "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+
+  {
+    "name": "mhamr",
+    "version": "1.0.0",
+    "type": "module",
+    "main": "src/bootstrap.js",
+    "scripts": {
+      "start": "node src/bootstrap.js",
+      "dev": "nodemon src/bootstrap.js",
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",
