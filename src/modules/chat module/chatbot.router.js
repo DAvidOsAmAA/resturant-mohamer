@@ -9,10 +9,10 @@ router.route('/chatbot').post(auth,chatCon.chatbot)
 
 router.route('/createChat').post(auth,chatCon.createChat)
 
-router.route('/readChat/:userId').get(auth,chatCon.readChat)
+router.route('/readChat').get(auth,chatCon.readChat)
 
-router.route('/updateChat/:userId').patch(auth,chatCon.updateChat)
+router.route('/updateChat').patch(auth,chatCon.updateChat)
 
-router.route('/deleteChat/:userId').delete(auth,chatCon.deleteChat)
+router.route('/deleteChat').delete(auth,chatCon.deleteChat)
 
 export default router
