@@ -2,7 +2,7 @@ import Chat from '../../../DB/models/chat.model.js'
 import {GoogleGenerativeAI} from "@google/generative-ai"
 import {asynchandler} from '../../utilis/asyncHandler.js'
 import { chatSchema } from './chatbot.schema.js'
-import Meals from '../../../DB/models/meals.model.js'
+import meals from '../../../DB/models/meals.model.js'
 
 const createChat = asynchandler(async (req,res) =>{
     const {userId} = req.body;
@@ -115,7 +115,7 @@ const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
 const chatbot = asynchandler(async (req, res) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
-    const menuItems  = await Meals.findAll() 
+    const menuItems  = await meals.find() 
     // const menuItems = [
     //     { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
     //     { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
