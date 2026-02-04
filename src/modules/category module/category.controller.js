@@ -24,7 +24,7 @@ export const getCategories = async (req, res) => {
  * @access Public
  */
 export const getSpecificCategory=async(req,res)=>{
-  const {id}=req.body;
+  const {id}=req.params;
   const category=await Category.findById(id)
   if(!category){
     res.status(404).json({

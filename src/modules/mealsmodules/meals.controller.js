@@ -15,7 +15,7 @@ export const getmealbyid = async (req, res, next) => {
 export const getallmeals = async (req, res, next) => {
     try {
         const { category, minPrice, maxPrice, page = 1, limit = 10, sort = '-createdAt' } = req.query;
-      
+        const filter = {};
         
         if (category) filter.category = category;
         if (minPrice || maxPrice) filter.price = {};

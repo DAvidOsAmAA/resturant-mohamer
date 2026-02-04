@@ -8,12 +8,12 @@ import {
     validateupdateMealBodySchema 
 } from './meal.validate.js';
 
-const router = express.Router();
+const mealrouter=express.Router();
 
-router.get('/:id', validatemealidparamsscheema, mealcontroller.getmealbyid);
-router.get('/', validateGetMealsQuery, mealcontroller.getallmeals);           
-router.put('/:id', validatemealidparamsscheema, validateupdateMealBodySchema, mealcontroller.updateMeal);
-router.post('/', validatecreatmealscheema, mealcontroller.creatmeal);          
-router.delete('/:id', mealcontroller.deleteMeal);
+mealrouter.get('/:id', validatemealidparamsscheema, mealcontroller.getmealbyid);
+mealrouter.get('/', validateGetMealsQuery, mealcontroller.getallmeals);           
+mealrouter.put('/:id', validatemealidparamsscheema, validateupdateMealBodySchema, mealcontroller.updateMeal);
+mealrouter.post('/', validatecreatmealscheema, mealcontroller.creatmeal);          
+mealrouter.delete('/:id', mealcontroller.deleteMeal);
 
-export default router;
+export default mealrouter;
