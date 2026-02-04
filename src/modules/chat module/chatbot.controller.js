@@ -78,7 +78,7 @@ Rules you MUST follow:
 const chatWithBot =  async(userMessage, menuItems=[],chatHistory=[])=>{
     try{
         const model =  genAI.getGenerativeModel({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-lite',
             generationConfig:{
                 temperature:0.7, // 👈Controls the creativity of responses
                 topK:1, // 👈Controls the diverstiy of responses
@@ -116,15 +116,9 @@ const chatbot = asynchandler(async (req, res) => {
     const userMessage = req.body.userMessage
     // 👇All the meals in the db, so the chatbot can recommend from it
     const menuItems  = await meals.find() 
-    // const menuItems = [
-    //     { name: "Grilled Chicken Salad", ingredients: ["chicken", "lettuce", "tomatoes", "cucumbers"], allergens: ["none"] },
-    //     { name: "Vegan Buddha Bowl", ingredients: ["quinoa", "chickpeas", "avocado", "mixed greens"], allergens: ["none"] },
-    //     { name: "Spaghetti Bolognese", ingredients: ["spaghetti", "ground beef", "tomato sauce", "parmesan"], allergens: ["gluten", "dairy"] },
-    //     { name: "Gluten-Free Margherita Pizza", ingredients: ["gluten-free crust", "tomato sauce", "mozzarella", "basil"], allergens: ["dairy"] },
-    // ]
+
     // 👇Retreives all the chat so it can be used 
-    
-    let userChat = await Chat.findById(req.user._id)
+    let userChat = await Chat.findOne({userId:req.user._id})
 
     if(!userChat){
         userChat = await Chat.create({userId:req.user._id})
@@ -146,14 +140,17 @@ const chatbot = asynchandler(async (req, res) => {
     }
 
 
-
     // 👇Speak with the model, given our menu & chat history
     const response = await chatWithBot(userMessage, menuItems, userChat.history)
 
     // 👇Updates the chat in the db to append the last convo. to that specific user history 
-    const completeHistory = [...userChat.history, { role: 'user', message: userMessage }, { role: 'bot', message: response }];
-    userChat.history = completeHistory;
-    await userChat.save();
+    const pushedHistory = [{role:'user', message: userMessage}, {role:"model", message: response}]
+    if(response){ // Don't store anything if the model's message is null, breaks function
+        await Chat.findByIdAndUpdate(userChat._id,{
+            $push: {history:{$each :pushedHistory, $slice: -15} }}, // Keep the last 15 messages only   
+            {new:true}
+        )
+    }
 
     res.status(200).json({
         status: 'success',

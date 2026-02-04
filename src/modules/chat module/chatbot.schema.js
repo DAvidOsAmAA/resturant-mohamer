@@ -15,7 +15,7 @@ export const chatSchema = Joi.object({
     .items(
       Joi.object({
         role: Joi.string()
-          .valid('user', 'assistant', 'system')
+          .valid('user', 'bot', 'model')
           .required(),
 
         message: Joi.string()
