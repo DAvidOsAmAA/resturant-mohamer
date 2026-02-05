@@ -84,8 +84,9 @@ export const updateBrand = async (req, res, next) => {
     if (isNameExist) {
       return next(new Error("Brand name already exists", { cause: 409 }));
     }
+    brand.name = req.body.name;
   }
-  brand.name = req.body.name;
+
 
   await brand.save();
   return res.status(200).json({
