@@ -1,5 +1,5 @@
-import Brand from "../../DB/models/brand.model.js";
-import cloudinary from "../../utils/cloudinary.js";
+import Brand from "../../../DB/models/brand.model.js";
+import cloudinary from "../../utilis/cloudinary.js";
 
 // createBrand
 export const createBrand = async (req, res, next) => {
