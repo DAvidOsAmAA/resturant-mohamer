@@ -2,10 +2,10 @@ import { Router } from "express";
 import * as brandController from "./brand.controller.js";
 import { asynchandler } from "../../utilis/asyncHandler.js";
 import { uploadSingleImage } from "../../utilis/multer.js";
-import auth from "../../middlewares/auth.js";
-import role from "../../middlewares/role.js";
-import validate from "../../middlewares/validate.js";
-import * as validators from "./brand.validation.js";
+import auth from "../middlewares/auth.js";
+import role from "../middlewares/role.js";
+import validate from "../middlewares/validate.js";
+import * as validators from "./brand.schema.js";
 
 const router = Router();
 
