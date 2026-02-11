@@ -7,10 +7,10 @@ import {uploadSingleImage} from "../../utilis/multer.js";
 
 let router = express.Router();
 
-router.post('/create',uploadSingleImage('image'),validate(createSubMealSchema),asynchandler(createSubMeal));
-router.get('/get',asynchandler(getSubMeals));
-router.delete('/delete/:id',asynchandler(deleteSubMeal));
-router.patch('/update/:id',validate(updateSubMealSchema),asynchandler(updateSubMeal));
+router.post('subMeals/create',uploadSingleImage('image'),validate(createSubMealSchema),asynchandler(createSubMeal));
+router.get('subMeals/get',asynchandler(getSubMeals));
+router.delete('subMeals/delete/:id',asynchandler(deleteSubMeal));
+router.patch('subMeals/update/:id',validate(updateSubMealSchema),asynchandler(updateSubMeal));
 
 export default router;
 
